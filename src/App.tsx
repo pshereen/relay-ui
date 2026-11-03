@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ArrowRight, AtSign, Box, Check, CheckCircle2, Code2, Command, Copy, GitFork, Menu, Moon, Palette, Plus, Search, Settings, Sparkles, Sun, X } from 'lucide-react'
 import { Button } from './components/Button'
 import { Input } from './components/Input'
+import { Select } from './components/Select'
 import { Textarea } from './components/Textarea'
 import './App.css'
 
@@ -16,6 +17,18 @@ export function SaveAction() {
   return <Button variant="primary">Save changes</Button>
 }`
 
+const roleOptions = [
+  { label: 'Product', options: [{ value: 'designer', label: 'Product designer' }, { value: 'manager', label: 'Product manager' }] },
+  { label: 'Engineering', options: [{ value: 'frontend', label: 'Frontend engineer' }, { value: 'backend', label: 'Backend engineer' }, { value: 'platform', label: 'Platform engineer' }] },
+]
+
+const timezoneOptions = [
+  { value: 'pt', label: 'Pacific Time (PT)' },
+  { value: 'mt', label: 'Mountain Time (MT)' },
+  { value: 'ct', label: 'Central Time (CT)' },
+  { value: 'et', label: 'Eastern Time (ET)' },
+]
+
 function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [menuOpen, setMenuOpen] = useState(false)
@@ -23,6 +36,8 @@ function App() {
   const [selectedSize, setSelectedSize] = useState('Medium')
   const [selectedState, setSelectedState] = useState<'default' | 'loading' | 'disabled'>('default')
   const [fieldState, setFieldState] = useState<'default' | 'error' | 'success' | 'disabled' | 'readonly'>('default')
+  const [selectState, setSelectState] = useState<'default' | 'error' | 'success' | 'disabled'>('default')
+  const [selectedRole, setSelectedRole] = useState('')
 
   useEffect(() => { document.documentElement.dataset.theme = theme }, [theme])
 
@@ -171,6 +186,57 @@ function App() {
           </div>
 
           <aside className="accessibility-note"><Check size={19} /><div><h3>Accessibility guidance</h3><p>Labels are always visible and programmatically connected. Descriptions, errors, and character counts are associated with <code>aria-describedby</code>; invalid fields use <code>aria-invalid</code>; native disabled, required, and read-only behavior is preserved.</p></div></aside>
+        </section>
+
+        <section className="select-docs" id="select" aria-labelledby="select-docs-title">
+          <div className="docs-intro"><p className="kicker">Selection component</p><h2 id="select-docs-title">Select</h2><p>Select lets people choose one value from a predefined list. It preserves native browser and assistive-technology behavior while matching the Relay UI field system.</p></div>
+
+          <div className="component-workbench select-workbench">
+            <div className="select-preview">
+              <Select
+                label="Your role"
+                options={roleOptions}
+                placeholder="Select a role"
+                value={selectedRole}
+                onChange={(event) => setSelectedRole(event.target.value)}
+                description={selectState === 'error' ? undefined : 'This helps us personalize your workspace.'}
+                error={selectState === 'error' ? 'Choose the role that best matches your work.' : undefined}
+                success={selectState === 'success'}
+                disabled={selectState === 'disabled'}
+                required
+              />
+            </div>
+            <div className="controls-pane single-control"><label className="control-row"><span>Preview state</span><select className="select-control" value={selectState} onChange={(event) => setSelectState(event.target.value as typeof selectState)}><option value="default">Default</option><option value="error">Error</option><option value="success">Success</option><option value="disabled">Disabled</option></select></label></div>
+          </div>
+
+          <div className="docs-grid select-examples">
+            <div className="docs-block"><div className="docs-heading"><div><h3>Placeholder</h3><p>Prompt for a choice without preselecting an answer.</p></div></div><div className="example-card form-example"><Select label="Timezone" options={timezoneOptions} placeholder="Choose a timezone" description="Used for notifications and due dates." /></div></div>
+            <div className="docs-block"><div className="docs-heading"><div><h3>Grouped options</h3><p>Use groups to make longer related lists easier to scan.</p></div></div><div className="example-card form-example"><Select label="Role" options={roleOptions} placeholder="Choose a role" /></div></div>
+          </div>
+
+          <div className="docs-block">
+            <div className="docs-heading"><div><h3>Validation states</h3><p>Messages describe the status explicitly instead of relying on border color.</p></div></div>
+            <div className="field-example-grid">
+              <Select label="Default" options={timezoneOptions} placeholder="Choose an option" />
+              <Select label="Success" options={timezoneOptions} defaultValue="pt" success description="Timezone saved." />
+              <Select label="Error" options={timezoneOptions} placeholder="Choose an option" error="Select a timezone to continue." />
+              <Select label="Disabled" options={timezoneOptions} defaultValue="et" disabled description="Managed by your organization." />
+            </div>
+          </div>
+
+          <div className="docs-block">
+            <div className="docs-heading"><div><h3>Props</h3><p>Select extends native HTML select attributes.</p></div></div>
+            <div className="props-table-wrap"><table className="props-table"><thead><tr><th>Prop</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+              <tr><td><code>label</code></td><td><code>ReactNode</code></td><td>Yes</td><td>Visible accessible label for the control.</td></tr>
+              <tr><td><code>options</code></td><td><code>(SelectOption | SelectOptionGroup)[]</code></td><td>Yes</td><td>Flat or grouped data used to render options.</td></tr>
+              <tr><td><code>placeholder</code></td><td><code>string</code></td><td>No</td><td>Disabled initial option prompting the user to choose.</td></tr>
+              <tr><td><code>description</code></td><td><code>ReactNode</code></td><td>No</td><td>Helpful text associated with the select.</td></tr>
+              <tr><td><code>error</code></td><td><code>ReactNode</code></td><td>No</td><td>Marks the control invalid and announces the error.</td></tr>
+              <tr><td><code>success</code></td><td><code>boolean</code></td><td>No</td><td>Applies successful validation styling.</td></tr>
+            </tbody></table></div>
+          </div>
+
+          <aside className="accessibility-note"><Check size={19} /><div><h3>Accessibility guidance</h3><p>Relay UI uses the native <code>select</code> element, retaining operating-system keyboard controls, touch behavior, and screen-reader support. The visible label, helper text, and validation message are programmatically associated.</p></div></aside>
         </section>
 
         <section className="code-section" id="getting-started">

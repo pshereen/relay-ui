@@ -6,7 +6,7 @@ An accessible React and TypeScript design system for building thoughtful product
 
 - Responsive documentation shell and component playground
 - Semantic design tokens with light and dark themes
-- Accessible, typed button primitive with variants and sizes
+- Accessible, typed Button, Input, and Textarea primitives with documented states
 - Keyboard-visible focus, reduced-motion support, and semantic navigation
 - Vitest and Testing Library component coverage
 
@@ -27,7 +27,7 @@ npm run build
 
 ## Roadmap
 
-- Add inputs, selects, dialogs, alerts, and data-display primitives
+- Add Select, Dialog, Alert, and data-display primitives
 - Publish component documentation with Storybook
 - Add automated accessibility and visual-regression checks
 - Define JSON schemas for constrained AI-generated interfaces

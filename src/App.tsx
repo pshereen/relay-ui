@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
-import { ArrowRight, Box, Check, Code2, Command, Copy, GitFork, Menu, Moon, Palette, Plus, Search, Settings, Sparkles, Sun, X } from 'lucide-react'
+import { ArrowRight, AtSign, Box, Check, CheckCircle2, Code2, Command, Copy, GitFork, Menu, Moon, Palette, Plus, Search, Settings, Sparkles, Sun, X } from 'lucide-react'
 import { Button } from './components/Button'
+import { Input } from './components/Input'
+import { Textarea } from './components/Textarea'
 import './App.css'
 
 const navigation = [
@@ -20,6 +22,7 @@ function App() {
   const [copied, setCopied] = useState(false)
   const [selectedSize, setSelectedSize] = useState('Medium')
   const [selectedState, setSelectedState] = useState<'default' | 'loading' | 'disabled'>('default')
+  const [fieldState, setFieldState] = useState<'default' | 'error' | 'success' | 'disabled' | 'readonly'>('default')
 
   useEffect(() => { document.documentElement.dataset.theme = theme }, [theme])
 
@@ -113,6 +116,61 @@ function App() {
           </div>
 
           <aside className="accessibility-note"><Check size={19} /><div><h3>Accessibility guidance</h3><p>Use visible labels whenever possible. Icon-only buttons need an <code>aria-label</code>. Loading buttons expose <code>aria-busy</code> and are disabled to prevent duplicate submissions. Focus remains visible for keyboard users.</p></div></aside>
+        </section>
+
+        <section className="field-docs" id="input" aria-labelledby="field-docs-title">
+          <div className="docs-intro"><p className="kicker">Form components</p><h2 id="field-docs-title">Input &amp; Textarea</h2><p>Fields collect structured and freeform information while keeping labels, guidance, validation, and state clear for every user.</p></div>
+
+          <div className="component-workbench field-workbench">
+            <div className="field-preview">
+              <Input
+                label="Work email"
+                type="email"
+                placeholder="you@company.com"
+                description={fieldState === 'error' ? undefined : 'Use the address associated with your team.'}
+                error={fieldState === 'error' ? 'Enter a valid work email.' : undefined}
+                success={fieldState === 'success'}
+                disabled={fieldState === 'disabled'}
+                readOnly={fieldState === 'readonly'}
+                defaultValue={fieldState === 'readonly' ? 'designer@relay.dev' : undefined}
+                leadingIcon={<AtSign size={17} />}
+                trailingIcon={fieldState === 'success' ? <CheckCircle2 size={17} /> : undefined}
+                required
+              />
+              <Textarea label="Project summary" placeholder="Describe what you are building..." description="Help collaborators understand the goal." showCharacterCount maxLength={180} disabled={fieldState === 'disabled'} readOnly={fieldState === 'readonly'} />
+            </div>
+            <div className="controls-pane single-control"><label className="control-row"><span>Preview state</span><select className="select-control" value={fieldState} onChange={(event) => setFieldState(event.target.value as typeof fieldState)}><option value="default">Default</option><option value="error">Error</option><option value="success">Success</option><option value="disabled">Disabled</option><option value="readonly">Read only</option></select></label></div>
+          </div>
+
+          <div className="docs-block field-examples">
+            <div className="docs-heading"><div><h3>Common states</h3><p>Validation messages explain how to recover instead of relying on color alone.</p></div></div>
+            <div className="field-example-grid">
+              <Input label="Default" placeholder="Enter a value" description="Helpful context goes here." />
+              <Input label="Success" defaultValue="relay-ui" success trailingIcon={<CheckCircle2 size={17} />} description="This name is available." />
+              <Input label="Error" defaultValue="relay ui" error="Use letters, numbers, or hyphens." />
+              <Input label="Disabled" defaultValue="Unavailable" disabled description="This field cannot be edited." />
+            </div>
+          </div>
+
+          <div className="docs-grid">
+            <div className="docs-block"><div className="docs-heading"><div><h3>With icons</h3><p>Decorative icons add context without replacing labels.</p></div></div><div className="example-card form-example"><Input label="Email address" type="email" placeholder="name@example.com" leadingIcon={<AtSign size={17} />} /></div></div>
+            <div className="docs-block" id="textarea"><div className="docs-heading"><div><h3>Character count</h3><p>Use a counter when content has a meaningful limit.</p></div></div><div className="example-card form-example"><Textarea label="Short bio" placeholder="A few words about you" showCharacterCount maxLength={120} /></div></div>
+          </div>
+
+          <div className="docs-block">
+            <div className="docs-heading"><div><h3>Field props</h3><p>Both components extend their native HTML element attributes.</p></div></div>
+            <div className="props-table-wrap"><table className="props-table"><thead><tr><th>Prop</th><th>Component</th><th>Type</th><th>Description</th></tr></thead><tbody>
+              <tr><td><code>label</code></td><td>Both</td><td><code>ReactNode</code></td><td>Visible accessible label for the field.</td></tr>
+              <tr><td><code>description</code></td><td>Both</td><td><code>ReactNode</code></td><td>Guidance associated through aria-describedby.</td></tr>
+              <tr><td><code>error</code></td><td>Both</td><td><code>ReactNode</code></td><td>Marks the field invalid and announces the message.</td></tr>
+              <tr><td><code>success</code></td><td>Both</td><td><code>boolean</code></td><td>Applies successful validation styling.</td></tr>
+              <tr><td><code>leadingIcon</code></td><td>Input</td><td><code>ReactNode</code></td><td>Decorative icon at the start of the control.</td></tr>
+              <tr><td><code>trailingIcon</code></td><td>Input</td><td><code>ReactNode</code></td><td>Decorative icon at the end of the control.</td></tr>
+              <tr><td><code>showCharacterCount</code></td><td>Textarea</td><td><code>boolean</code></td><td>Displays a live count, optionally with maxLength.</td></tr>
+            </tbody></table></div>
+          </div>
+
+          <aside className="accessibility-note"><Check size={19} /><div><h3>Accessibility guidance</h3><p>Labels are always visible and programmatically connected. Descriptions, errors, and character counts are associated with <code>aria-describedby</code>; invalid fields use <code>aria-invalid</code>; native disabled, required, and read-only behavior is preserved.</p></div></aside>
         </section>
 
         <section className="code-section" id="getting-started">

@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
+
+:root { font-family: 'DM Sans', system-ui, sans-serif; color: #1d2724; background: #fbfcf9; font-synthesis: none; text-rendering: optimizeLegibility; --canvas: #fbfcf9; --surface: #fff; --surface-subtle: #f3f6f2; --text: #1d2724; --muted: #697570; --border: #dce3de; --accent: #3d735f; --accent-strong: #2e5e4d; --accent-soft: #e0eee7; --focus: #275fbd; }
+:root[data-theme='dark'] { color-scheme: dark; --canvas: #131916; --surface: #1a231f; --surface-subtle: #202b26; --text: #ecf2ee; --muted: #a7b4ae; --border: #34423b; --accent: #87c4a9; --accent-strong: #a8d8c2; --accent-soft: #263c32; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: var(--canvas); }
+button, input { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; }
+button:focus-visible, a:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+::selection { background: var(--accent-soft); color: var(--text); }

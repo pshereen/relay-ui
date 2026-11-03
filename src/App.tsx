@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { ArrowRight, AtSign, Box, Check, CheckCircle2, Code2, Command, Copy, GitFork, Menu, Moon, Palette, Plus, Search, Settings, Sparkles, Sun, X } from 'lucide-react'
+import { AlertTriangle, ArrowRight, AtSign, Box, Check, CheckCircle2, Code2, Command, Copy, GitFork, Menu, Moon, Palette, Pencil, Plus, Search, Settings, Sparkles, Sun, Trash2, X } from 'lucide-react'
 import { Button } from './components/Button'
+import { Dialog } from './components/Dialog'
 import { Input } from './components/Input'
 import { Select } from './components/Select'
 import { Textarea } from './components/Textarea'
@@ -38,6 +39,8 @@ function App() {
   const [fieldState, setFieldState] = useState<'default' | 'error' | 'success' | 'disabled' | 'readonly'>('default')
   const [selectState, setSelectState] = useState<'default' | 'error' | 'success' | 'disabled'>('default')
   const [selectedRole, setSelectedRole] = useState('')
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   useEffect(() => { document.documentElement.dataset.theme = theme }, [theme])
 
@@ -237,6 +240,59 @@ function App() {
           </div>
 
           <aside className="accessibility-note"><Check size={19} /><div><h3>Accessibility guidance</h3><p>Relay UI uses the native <code>select</code> element, retaining operating-system keyboard controls, touch behavior, and screen-reader support. The visible label, helper text, and validation message are programmatically associated.</p></div></aside>
+        </section>
+
+        <section className="dialog-docs" id="dialog" aria-labelledby="dialog-docs-title">
+          <div className="docs-intro"><p className="kicker">Overlay component</p><h2 id="dialog-docs-title">Dialog</h2><p>Dialogs focus attention on a short task or important decision without navigating away from the current context.</p></div>
+
+          <div className="dialog-demo-grid">
+            <article className="dialog-demo-card"><span className="dialog-demo-icon"><Pencil size={20} /></span><h3>Edit information</h3><p>Use a standard dialog for focused forms and reversible tasks.</p><Button variant="secondary" onClick={() => setEditDialogOpen(true)}>Open edit dialog</Button></article>
+            <article className="dialog-demo-card"><span className="dialog-demo-icon dialog-demo-icon--danger"><AlertTriangle size={20} /></span><h3>Confirm deletion</h3><p>Use explicit language when an action is destructive or difficult to reverse.</p><Button variant="secondary" onClick={() => setDeleteDialogOpen(true)}>Open confirmation</Button></article>
+          </div>
+
+          <Dialog
+            open={editDialogOpen}
+            onOpenChange={setEditDialogOpen}
+            title="Edit workspace"
+            description="Update the details your teammates see."
+            footer={<><Button variant="secondary" onClick={() => setEditDialogOpen(false)}>Cancel</Button><Button onClick={() => setEditDialogOpen(false)}>Save changes</Button></>}
+          >
+            <div className="dialog-form"><Input label="Workspace name" defaultValue="Relay design team" data-autofocus /><Textarea label="Description" defaultValue="Shared components and patterns for our product teams." showCharacterCount maxLength={120} /></div>
+          </Dialog>
+
+          <Dialog
+            open={deleteDialogOpen}
+            onOpenChange={setDeleteDialogOpen}
+            title="Delete workspace?"
+            description="This action cannot be undone. All workspace components and settings will be permanently removed."
+            size="small"
+            footer={<><Button variant="secondary" onClick={() => setDeleteDialogOpen(false)}>Cancel</Button><Button className="danger-button" leadingIcon={<Trash2 size={16} />} onClick={() => setDeleteDialogOpen(false)}>Delete workspace</Button></>}
+          />
+
+          <div className="docs-block dialog-anatomy">
+            <div className="docs-heading"><div><h3>Anatomy and behavior</h3><p>Structure and interaction remain consistent across dialog content.</p></div></div>
+            <div className="dialog-anatomy-grid">
+              <div><span>1</span><h4>Clear title</h4><p>Names the task or decision in a concise phrase.</p></div>
+              <div><span>2</span><h4>Supporting context</h4><p>Explains consequences and what the user should do.</p></div>
+              <div><span>3</span><h4>Focused content</h4><p>Keeps the task short enough to complete without navigation.</p></div>
+              <div><span>4</span><h4>Ordered actions</h4><p>Places the primary action last and keeps cancellation available.</p></div>
+            </div>
+          </div>
+
+          <div className="docs-block">
+            <div className="docs-heading"><div><h3>Props</h3><p>Dialog is controlled so the application owns its open state.</p></div></div>
+            <div className="props-table-wrap"><table className="props-table"><thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>
+              <tr><td><code>open</code></td><td><code>boolean</code></td><td>—</td><td>Controls whether the dialog is rendered.</td></tr>
+              <tr><td><code>onOpenChange</code></td><td><code>(open: boolean) =&gt; void</code></td><td>—</td><td>Receives dismissal and close-button changes.</td></tr>
+              <tr><td><code>title</code></td><td><code>ReactNode</code></td><td>—</td><td>Provides the dialog’s accessible name.</td></tr>
+              <tr><td><code>description</code></td><td><code>ReactNode</code></td><td>—</td><td>Provides supporting context and description.</td></tr>
+              <tr><td><code>size</code></td><td><code>'small' | 'medium' | 'large'</code></td><td><code>'medium'</code></td><td>Sets the maximum panel width.</td></tr>
+              <tr><td><code>closeOnEscape</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Allows dismissal with the Escape key.</td></tr>
+              <tr><td><code>closeOnBackdrop</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Allows dismissal by selecting the overlay.</td></tr>
+            </tbody></table></div>
+          </div>
+
+          <aside className="accessibility-note"><Check size={19} /><div><h3>Accessibility guidance</h3><p>Dialogs expose modal semantics and connected titles and descriptions. Focus moves inside on open, remains trapped while active, and returns to the trigger on close. Escape dismissal and visible close controls support keyboard use.</p></div></aside>
         </section>
 
         <section className="code-section" id="getting-started">

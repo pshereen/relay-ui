@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react'
 import { AlertTriangle, ArrowRight, AtSign, Box, Check, CheckCircle2, Code2, Command, Copy, GitFork, Menu, Moon, Palette, Pencil, Plus, Search, Settings, Sparkles, Sun, Trash2, X } from 'lucide-react'
 import { Button } from './components/Button'
+import { Alert } from './components/Alert'
 import { Dialog } from './components/Dialog'
 import { Input } from './components/Input'
 import { Select } from './components/Select'
 import { Textarea } from './components/Textarea'
+import { useToast } from './components/toast-context'
 import './App.css'
 
 const navigation = [
   { label: 'Foundations', items: ['Colors', 'Typography', 'Spacing', 'Icons'] },
-  { label: 'Components', items: ['Button', 'Input', 'Select', 'Dialog'] },
+  { label: 'Components', items: ['Button', 'Input', 'Select', 'Dialog', 'Alert', 'Toast'] },
 ]
 
 const codeExample = `import { Button } from '@relay-ui/react'
@@ -31,6 +33,7 @@ const timezoneOptions = [
 ]
 
 function App() {
+  const { toast } = useToast()
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [menuOpen, setMenuOpen] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -41,6 +44,7 @@ function App() {
   const [selectedRole, setSelectedRole] = useState('')
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [showDismissibleAlert, setShowDismissibleAlert] = useState(true)
 
   useEffect(() => { document.documentElement.dataset.theme = theme }, [theme])
 
@@ -293,6 +297,42 @@ function App() {
           </div>
 
           <aside className="accessibility-note"><Check size={19} /><div><h3>Accessibility guidance</h3><p>Dialogs expose modal semantics and connected titles and descriptions. Focus moves inside on open, remains trapped while active, and returns to the trigger on close. Escape dismissal and visible close controls support keyboard use.</p></div></aside>
+        </section>
+
+        <section className="notification-docs" id="alert" aria-labelledby="notification-docs-title">
+          <div className="docs-intro"><p className="kicker">Feedback components</p><h2 id="notification-docs-title">Alert &amp; Toast</h2><p>Notifications communicate outcomes and changes clearly. Alerts stay in the page’s flow; toasts acknowledge short-lived events without interrupting the current task.</p></div>
+
+          <div className="docs-block">
+            <div className="docs-heading"><div><h3>Alert tones</h3><p>Choose a tone based on meaning—not visual preference.</p></div></div>
+            <div className="alert-stack">
+              <Alert tone="info" title="New workspace controls">Administrators can now manage component access from settings.</Alert>
+              <Alert tone="success" title="Component published">Button version 1.2 is available to every product team.</Alert>
+              <Alert tone="warning" title="Review required">Two color tokens do not meet the target contrast ratio.</Alert>
+              <Alert tone="error" title="Unable to sync tokens">Reconnect Figma and try the synchronization again.</Alert>
+            </div>
+          </div>
+
+          <div className="docs-grid notification-examples">
+            <div className="docs-block"><div className="docs-heading"><div><h3>Dismissible alert</h3><p>Dismiss only when the message is optional or recoverable.</p></div></div><div className="example-card alert-example">{showDismissibleAlert ? <Alert title="Scheduled maintenance" onDismiss={() => setShowDismissibleAlert(false)}>Relay UI will be read-only on Sunday from 1–2 AM PT.</Alert> : <Button size="small" variant="secondary" onClick={() => setShowDismissibleAlert(true)}>Restore example</Button>}</div></div>
+            <div className="docs-block"><div className="docs-heading"><div><h3>Alert with action</h3><p>Keep the action specific to resolving or exploring the message.</p></div></div><div className="example-card alert-example"><Alert tone="warning" title="3 unpublished changes" action={<button className="alert-text-action" type="button">Review changes</button>}>Publish updates so product teams receive the latest components.</Alert></div></div>
+          </div>
+
+          <div className="toast-playground" id="toast">
+            <div><p className="kicker">Interactive toast demo</p><h3>Trigger a notification</h3><p>Toasts appear in the bottom-right corner, stack automatically, and pause while hovered or focused.</p></div>
+            <div className="toast-actions">
+              <Button variant="secondary" onClick={() => toast({ tone: 'success', title: 'Changes saved', description: 'Your workspace settings are up to date.' })}>Show success</Button>
+              <Button variant="secondary" onClick={() => toast({ tone: 'info', title: 'Invite sent', description: 'maya@example.com can now join this workspace.' })}>Show info</Button>
+              <Button variant="secondary" onClick={() => toast({ tone: 'warning', title: 'Connection unstable', description: 'Some updates may take longer than usual.', duration: 7000 })}>Show warning</Button>
+              <Button variant="secondary" onClick={() => toast({ tone: 'error', title: 'Upload failed', description: 'Check the file type and try again.', duration: 0 })}>Show persistent error</Button>
+            </div>
+          </div>
+
+          <div className="docs-grid notification-props">
+            <div className="docs-block"><div className="docs-heading"><div><h3>Alert API</h3><p>Inline feedback with optional actions and dismissal.</p></div></div><div className="props-table-wrap"><table className="props-table compact-props"><tbody><tr><td><code>tone</code></td><td>info · success · warning · error</td></tr><tr><td><code>title</code></td><td>Optional heading</td></tr><tr><td><code>action</code></td><td>Contextual React node</td></tr><tr><td><code>onDismiss</code></td><td>Enables close control</td></tr></tbody></table></div></div>
+            <div className="docs-block"><div className="docs-heading"><div><h3>Toast API</h3><p>Call the provider hook from any descendant.</p></div></div><div className="props-table-wrap"><table className="props-table compact-props"><tbody><tr><td><code>title</code></td><td>Required notification title</td></tr><tr><td><code>description</code></td><td>Optional supporting detail</td></tr><tr><td><code>tone</code></td><td>Semantic notification tone</td></tr><tr><td><code>duration</code></td><td>Milliseconds; 0 persists</td></tr></tbody></table></div></div>
+          </div>
+
+          <aside className="accessibility-note"><Check size={19} /><div><h3>Accessibility guidance</h3><p>Informational and successful feedback uses polite <code>status</code> semantics; errors use assertive <code>alert</code> semantics. Toast timers pause during pointer or keyboard interaction, and every toast includes an accessible dismiss button.</p></div></aside>
         </section>
 
         <section className="code-section" id="getting-started">
